@@ -1,0 +1,6 @@
+Du bekommst den Inhalt einer Mail für eine Reservierungsanfrage. Bitte extrahiere alle in der Mail angesprochenen Datumsangaben. Datumsangaben können auch in der Form: "nächsten Donnerstag" oder "übermorgen" vorkommen.
+
+Gib ein JSON zurück der Form:
+{"dates": ["YYYY-MM-DD", ...]}
+
+Das heutige Datum ist: 
