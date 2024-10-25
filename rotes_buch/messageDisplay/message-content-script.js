@@ -13,7 +13,8 @@ async function showBanner() {
     // Create the banner text element.
     const bannerText = document.createElement("div");
     bannerText.className = "thunderbirdMessageDisplayActionExample_Text";
-    bannerText.innerText = text;
+    // set html content
+    bannerText.innerHTML = text;
 
     // Create a button to display it in the banner.
     const markUnreadButton = document.createElement("button");
