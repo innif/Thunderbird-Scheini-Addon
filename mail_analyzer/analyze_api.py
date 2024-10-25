@@ -34,7 +34,7 @@ def display_html(output):
         quantity = r["quantity"]
         comment = r["comment"]
         text += "Datum: {}<br>Name: {}<br>Anzahl: {}<br>Kommentar: {}<br>".format(date, name, quantity, comment)
-        link = "http://localhost:8001/event/{}/add?name={}&quantity={}&comment={}".format(date, name, quantity, comment)
+        link = "http://rotes-buch.scheinbar.de/event/{}/add?name={}&quantity={}&comment={}".format(date, name, quantity, comment)
         #include link as html
         text += "<a href='{}'>Reservierung hinzufügen</a>".format(link)
     return text
