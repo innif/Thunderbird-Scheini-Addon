@@ -1,6 +1,6 @@
 async function showBanner() {
     let bannerDetails = await browser.runtime.sendMessage({
-        command: "getBannerDetails",
+        command: "analyzeMail",
     });
 
     // Get the details back from the formerly serialized content.

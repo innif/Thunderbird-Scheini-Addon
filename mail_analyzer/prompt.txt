@@ -27,8 +27,8 @@ Du formulierst eine Antwortmail und extrahierst die Reservierungen.
 
 # Ausabeformat
 Zusätzlich zur Antwortmail sollst du auch eine Liste hinzuzufügener Reservierungen angeben. Hier soll Datum, Name, Anzahl der Tickets angegeben werden. Es gibt zusätzlich noch ein Kommentarfeld für zusätzliche Angaben.
-Deine Ausgabe soll ausschließlich in JSON-Form geschehen, bitte keine erklärenden Texte dazu
-Setze in der Mail nur einfache Umbrüche mit "\n"
+Deine Ausgabe soll ausschließlich in JSON-Form geschehen, bitte keine erklärenden Texte dazu.
+Die E-Mail soll im HTML-Format geschrieben werden. Escape alle Sonderzeichen, damit es keine Konflikte im JSON-Format gibt.
 {
     "bookings": [
         {

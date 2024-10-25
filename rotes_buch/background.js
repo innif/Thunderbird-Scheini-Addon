@@ -100,8 +100,24 @@ async function commandHandler(message, sender) {
         return;
     }
 
+    // get Mail content
+    const message_content = await messenger.messages.getFull(messageHeader.id);
+
     // Check for known commands.
+    console.log("Switch");
     switch (message.command) {
+        case "analyzeMail":
+            // send to API for analysis
+            let analysis = await fetch('http://localhost:8000/analyze', {
+                method: 'POST',
+                body: JSON.stringify({
+                    subject: messageHeader.subject,
+                    author: messageHeader.author,
+                    content: message_content
+                })
+            });
+            let result = await analysis.json();
+            return result;
         case "getBannerDetails":
             // Create the information we want to return to our message display
             // script.

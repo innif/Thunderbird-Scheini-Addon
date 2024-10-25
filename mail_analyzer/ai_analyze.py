@@ -54,6 +54,8 @@ def analyze_mail(mail_content):
             {"role": "user", "content": "Analysiere die Mail. Achte auf die maximale Anzahl an Sitzplätzen."}
         ]
     )
-    
+
+    text = completion.choices[0].message.content
+ 
     # # https://rotes-buch.scheinbar.de:5000/events/2024-10-24
-    return completion.choices[0].message.content
+    return json.loads(text)
