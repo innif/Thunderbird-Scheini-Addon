@@ -1,6 +1,8 @@
 // Import all functions defined in the messageTools module.
 import * as messageTools from '/modules/messageTools.mjs';
 
+let base64Credentials = btoa(`${username}:${password}`);
+
 // Add a listener for the onNewMailReceived events.
 messenger.messages.onNewMailReceived.addListener(async (folder, messages) => {
     let { messageLog } = await messenger.storage.local.get({ messageLog: [] });
@@ -103,18 +105,25 @@ async function commandHandler(message, sender) {
     // get Mail content
     const message_content = await messenger.messages.getFull(messageHeader.id);
 
+    let user = "api";
+    let password = "api";
+
     // Check for known commands.
     console.log("Switch");
     switch (message.command) {
         case "analyzeMail":
             // send to API for analysis
-            let analysis = await fetch('http://localhost:8000/analyze', {
+            let analysis = await fetch('https://rotes-buch.scheinbar.de:5001/analyze', {
                 method: 'POST',
                 body: JSON.stringify({
                     subject: messageHeader.subject,
                     author: messageHeader.author,
                     content: message_content
-                })
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${base64Credentials}`
+                }
             });
             let result = await analysis.json();
             return result;
@@ -127,6 +136,60 @@ async function commandHandler(message, sender) {
             messenger.messages.update(messageHeader.id, {
                 read: false,
             });
+            break;
+        case "openReplyMail":
+            // Open a new tab with a reply to the message.
+            try {
+                let analysis = await fetch('https://rotes-buch.scheinbar.de:5001/gen_response', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        subject: messageHeader.subject,
+                        author: messageHeader.author,
+                        content: message_content,
+                        details: message.details
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Basic ${base64Credentials}`
+                    }
+                });
+
+                let result = await analysis.json();
+
+                console.log(result);
+                // Beginne die Antwort auf die Nachricht
+                let replyWindow = await browser.compose.beginReply(messageHeader.id);
+            
+                // Warte ein wenig, um sicherzustellen, dass das Antwortfenster bereit ist
+                await new Promise(resolve => setTimeout(resolve, 500));
+            
+                // Setze den gewünschten Inhalt in das Fenster
+                let new_content = result.text;
+            
+                // get current content
+                let currentContent = await browser.compose.getComposeDetails(replyWindow.id);
+                
+                // append current content to the new content
+                let content = currentContent.body;
+
+                // if mail is html, add new content after <body> tag
+                if (content.includes("<body")) {
+                    // insert new content after <body> tag
+                    content = content.replace(/<body[^>]*>/, `$&${new_content}`);
+                } else {
+                    // insert new content at the end of the mail
+                    content = new_content + content;
+                }
+
+                // Setze den Body-Inhalt in das geöffnete Fenster
+                await browser.compose.setComposeDetails(replyWindow.id, {
+                  body: content
+                });
+            
+              } catch (error) {
+                console.error("Fehler beim Hinzufügen des Inhalts zur Antwort:", error);
+              }
+          
             break;
     }
 }

@@ -27,7 +27,9 @@
         "storage",
         "menus",
         "notifications",
-        "messagesModify"
+        "messagesModify",
+        "compose",
+        "compose.save"
     ],
     "background": {
         "page": "background.html"

@@ -1,10 +1,16 @@
 async function showBanner() {
+    // Check if mail is sent to a specific address.
+    if (!document.body.textContent.includes("tickets@scheinbar.de")) {
+        return;
+    }
+
     let bannerDetails = await browser.runtime.sendMessage({
         command: "analyzeMail",
     });
 
     // Get the details back from the formerly serialized content.
     const { text } = bannerDetails;
+    let details = bannerDetails;
 
     // Create the banner element itself.
     const banner = document.createElement("div");
@@ -18,12 +24,13 @@ async function showBanner() {
 
     // Create a button to display it in the banner.
     const markUnreadButton = document.createElement("button");
-    markUnreadButton.innerText = "Mark unread";
+    markUnreadButton.innerText = "Antworten";
     markUnreadButton.addEventListener("click", async () => {
         // Add the button event handler to send the command to the
         // background script.
         browser.runtime.sendMessage({
-            command: "markUnread",
+            command: "openReplyMail",
+            details: details
         });
     });
 
